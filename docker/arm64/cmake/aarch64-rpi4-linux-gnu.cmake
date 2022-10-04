@@ -3,7 +3,7 @@ set(CMAKE_SYSTEM_PROCESSOR aarch64)
 set(cross "aarch64-linux-gnu")
 
 set(CMAKE_SYSROOT /rpi4-bullseye-arm64)
-SET(CMAKE_FIND_ROOT_PATH ${CMAKE_SYSROOT}) 
+set(CMAKE_FIND_ROOT_PATH ${CMAKE_SYSROOT}) 
 set(CMAKE_LIBRARY_ARCHITECTURE ${cross})
 set(CMAKE_STAGING_PREFIX /staging-aarch64-rpi4)
 

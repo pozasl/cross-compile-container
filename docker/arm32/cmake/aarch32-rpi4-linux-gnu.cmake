@@ -1,9 +1,10 @@
+
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR armhf)
 set(cross "arm-linux-gnueabihf")
 
 set(CMAKE_SYSROOT /rpi4-bullseye-armhf)
-SET(CMAKE_FIND_ROOT_PATH ${CMAKE_SYSROOT}) 
+set(CMAKE_FIND_ROOT_PATH ${CMAKE_SYSROOT}) 
 set(CMAKE_LIBRARY_ARCHITECTURE ${cross})
 set(CMAKE_STAGING_PREFIX /staging-aarch32-rpi4)
 

@@ -4,7 +4,7 @@ ENV RASPI_ARCH=arm64
 ENV RASPI_HW_VERSION=rpi4
 ENV RASPI_SW_VERSION=bullseye
 ENV DEBIAN_FRONTEND=noninteractive 
-ENV CHROOT_PATH=${RASPI_HW_VERSION}-${RASPI_SW_VERSION}-${RASPI_ARCH}
+ENV CHROOT_PATH=/${RASPI_HW_VERSION}-${RASPI_SW_VERSION}-${RASPI_ARCH}
 ENV TZ=Etc/UTC
 
 RUN apt update && apt install ubuntu-dev-tools -y
@@ -26,12 +26,14 @@ RUN chroot ${CHROOT_PATH} sh -c 'apt-get install libboost-all-dev libjsoncpp-dev
 # Add libs and needed tools for X86-64 too.
 RUN apt-get install libboost-all-dev libjsoncpp-dev libwebsocketpp-dev libssl-dev wget -y
 RUN apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gdb-multiarch cmake ninja-build -y
-#
+# Add specifique cmake files to configure the toolchain
 ADD docker/arm64/cmake /cmake
+# Add script to auto configure and build
 ADD docker/arm64/run.sh /run.sh
 RUN chmod +x /run.sh
+# Set workdir and build folder en variable
 ENV WORKDIR_FOLDER /workdir
 ENV BUILD_FOLDER ${WORKDIR_FOLDER}/build
 WORKDIR ${BUILD_FOLDER}
-#cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/aarch64-rpi4-linux-gnu.cmake .. && ..cmake --build ../
+#cmake -DCMAKE_TOOLCHAIN_FILE=/cmake/aarch64-rpi4-linux-gnu.cmake -S $WORKDIR_FOLDER -B $BUILD_FOLDER && cmake --build $BUILD_FOLDER
 CMD [ "/run.sh"]
