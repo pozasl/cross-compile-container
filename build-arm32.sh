@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -f docker/arm32/DockerFile -t ubuntu-arm32toolchain-wiringpi .
+docker build -f docker/armhf/DockerFile -t ubuntu-armhf-toolchain .

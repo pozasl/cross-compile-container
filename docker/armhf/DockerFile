@@ -1,10 +1,10 @@
 FROM ubuntu:20.04
 
-ENV RASPI_ARCH=arm64
+ENV RASPI_ARCH=armhf
 ENV RASPI_HW_VERSION=rpi4
 ENV RASPI_SW_VERSION=bullseye
 ENV CHROOT_PATH=/${RASPI_HW_VERSION}-${RASPI_SW_VERSION}-${RASPI_ARCH}
-ENV CROSS_ARCH=aarch64-linux-gnu
+ENV CROSS_ARCH=arm-linux-gnueabihf
 ENV DEBIAN_FRONTEND=noninteractive 
 ENV TZ=Etc/UTC
 ENV WORKDIR_FOLDER /workdir
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y ubuntu-dev-tools gcc-${CROSS_ARCH} g++-
 RUN apt-get install -y debootstrap binfmt-support
 RUN debootstrap --arch=${RASPI_ARCH} --foreign ${RASPI_SW_VERSION} ${CHROOT_PATH}
 # Copy QEMU Static from another container to execute ARM cmd in chrooted environment
-COPY --from=multiarch/qemu-user-static /usr/bin/qemu-aarch64-static ${CHROOT_PATH}/usr/bin
+COPY --from=multiarch/qemu-user-static /usr/bin/qemu-arm-static ${CHROOT_PATH}/usr/bin
 
 # Add specifique cmake files to configure the toolchain
 ADD docker/${RASPI_ARCH}/cmake /cmake
@@ -24,5 +24,5 @@ ADD docker/${RASPI_ARCH}/run.sh /run.sh
 RUN chmod +x /run.sh
 
 WORKDIR ${BUILD_FOLDER}
-#cmake -DCMAKE_TOOLCHAIN_FILE=/cmake/aarch64-rpi4-linux-gnu.cmake -S $WORKDIR_FOLDER -B $BUILD_FOLDER && cmake --build $BUILD_FOLDER
+#cmake -DCMAKE_TOOLCHAIN_FILE=/cmake/aarch32-rpi4-linux-gnu.cmake -S $WORKDIR_FOLDER -B $BUILD_FOLDER && cmake --build $BUILD_FOLDER
 CMD [ "/run.sh"]
