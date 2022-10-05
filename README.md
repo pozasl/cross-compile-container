@@ -41,7 +41,7 @@ docker run -it --rm  --volume `pwd`:/workdir ubuntu-arm64toolchain:latest
  ## Extending the container
 
 As a base container you should extend it by creating your own container to install your project dependencies.
-Those dependencies should be installed in both the chrooted ARM environment and the x86-64 container.
+Those dependencies should be installed in the chrooted ARM environment.
 
 Here's an example to install wiringpi :
 ```docker
@@ -57,6 +57,4 @@ RUN chroot ${CHROOT_PATH} sh -c 'apt-get update && apt-get install libboost-all-
 && wget https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-${RASPI_ARCH}.deb --no-check-certificate \
 && dpkg -i wiringpi-2.61-1-${RASPI_ARCH}.deb'
 #-------------------------
-# Install same libraries for X86-64
-RUN apt-get install -y libboost-all-dev libjsoncpp-dev libwebsocketpp-dev libssl-dev
 ```
