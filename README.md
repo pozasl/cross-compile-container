@@ -6,8 +6,8 @@ It cames with 2 flavors:
 - ubuntu-arm64toolchain for ARM 64 bits system
 - ubuntu-armhf-toolchain for ARM 32 bits system with FPU (armhf)
 
-It uses Debootstrap to create an ARM toolchain in a chrooted environment, and Qemu to install librairies dependencies in this chroot.
-Cmake an Ninja are available with a preconfigured .cmake file for the chrooted toolchain.
+It uses Debootstrap to create an ARM toolchain in a chrooted environment, and Qemu to install dependencies in this chroot.
+Cmake and Ninja are available with a preconfigured .cmake file for the chrooted toolchain.
 
 ## Building the containers
 
@@ -20,7 +20,7 @@ Or simply run the build script
 sh build-arm64.sh
 ```
 
-To build an the ARM 32 (armhf) toolchain from this project root directory
+To build an ARM 32 (armhf) toolchain from this project root directory
 ```bash
 docker build -f docker/armhf/DockerFile -t ubuntu-armhf-toolchain .
 ```
@@ -31,7 +31,7 @@ sh build-arm32.sh
 
 ## Using the container
 
-In your ARM project root directory :
+In your ARM project's root directory :
 ```bash
 docker run -it --rm  --volume `pwd`:/workdir ubuntu-arm64toolchain:latest
  ```
@@ -40,10 +40,10 @@ docker run -it --rm  --volume `pwd`:/workdir ubuntu-arm64toolchain:latest
 
  ## Extending the container
 
-As a base container you should extend it by creating your own container with your project dependencies installed.
+As a base container, you should extend it by creating your own container with your project's dependencies installed.
 Those dependencies should be installed in the chrooted ARM environment.
 
-Here's an example to install wiringpi :
+Here's a sample Dockerfile to install wiringpi with boost, libwebsocket, libjsoncpp and libssl:
 ```docker
 FROM ubuntu-arm64-toolchain
 # There's needed file structure when installing dependecies with apt for boost like passwd
@@ -58,3 +58,6 @@ RUN chroot ${CHROOT_PATH} sh -c 'apt-get update && apt-get install libboost-all-
 && dpkg -i wiringpi-2.61-1-${RASPI_ARCH}.deb'
 #-------------------------
 ```
+
+## TODO
+- Use the default user instead of root to compile
