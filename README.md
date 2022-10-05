@@ -40,7 +40,7 @@ docker run -it --rm  --volume `pwd`:/workdir ubuntu-arm64toolchain:latest
 
  ## Extending the container
 
-As a base container you should extend it by creating your own container to install your project dependencies.
+As a base container you should extend it by creating your own container with your project dependencies installed.
 Those dependencies should be installed in the chrooted ARM environment.
 
 Here's an example to install wiringpi :
