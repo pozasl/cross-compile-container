@@ -33,8 +33,8 @@ sh build-arm32.sh
 
 In your ARM project's root directory :
 ```bash
-docker run -it --rm  --volume `pwd`:/workdir ubuntu-arm64toolchain:latest
- ```
+docker run -it --rm  --volume `pwd`:/workdir -u $(id -u) ubuntu-arm64toolchain:latest 
+```
 
  The container will create a build folder in your project with the resulted binary.
 
@@ -58,6 +58,3 @@ RUN chroot ${CHROOT_PATH} sh -c 'apt-get update && apt-get install libboost-all-
 && dpkg -i wiringpi-2.61-1-${RASPI_ARCH}.deb'
 #-------------------------
 ```
-
-## TODO
-- Use the default user instead of root to compile
