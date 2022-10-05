@@ -1,4 +1,4 @@
-# ARM32- ARM 64 CROSS COMPILE CONTAINER
+# ARM32 - ARM 64 CROSS COMPILE CONTAINER
 
 An Unbuntu X86-64 base container for ARM64 or ARM32 with FPU (armhf) project compilation targeted at Rapsberry Pi 4.
 
