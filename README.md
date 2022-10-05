@@ -6,12 +6,12 @@ It cames with 2 flavors:
 - ubuntu-arm64toolchain for ARM 64 bits system
 - ubuntu-armhf-toolchain for ARM 32 bits system with FPU (armhf)
 
-It uses Debootstrap to create a ARM toolchain in a chrooted environment, and Qemu to install librairies dependencies in this chroot.
-Cmake an Ninja are available with a .cmake file to configure the chrooted toolchain.
+It uses Debootstrap to create an ARM toolchain in a chrooted environment, and Qemu to install librairies dependencies in this chroot.
+Cmake an Ninja are available with a preconfigured .cmake file for the chrooted toolchain.
 
 ## Building the containers
 
-To build an the ARM 64 toolchain from this project root directory
+To build an ARM 64 toolchain from this project root directory
 ```bash
 docker build -f docker/arm64/DockerFile -t ubuntu-arm64-toolchain .
 ```
@@ -36,7 +36,7 @@ In your ARM project root directory :
 docker run -it --rm  --volume `pwd`:/workdir ubuntu-arm64toolchain:latest
  ```
 
- The container will create a build folder with the resulted binary.
+ The container will create a build folder in your project with the resulted binary.
 
  ## Extending the container
 
