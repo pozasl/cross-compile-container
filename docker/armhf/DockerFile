@@ -19,10 +19,10 @@ COPY --from=multiarch/qemu-user-static /usr/bin/qemu-arm-static ${CHROOT_PATH}/u
 
 # Add specifique cmake files to configure the toolchain
 ADD docker/${RASPI_ARCH}/cmake /cmake
-# Add script to auto configure and build
-ADD docker/${RASPI_ARCH}/run.sh /run.sh
-RUN chmod +x /run.sh
-
-WORKDIR ${BUILD_FOLDER}
-#cmake -DCMAKE_TOOLCHAIN_FILE=/cmake/aarch32-rpi4-linux-gnu.cmake -S $WORKDIR_FOLDER -B $BUILD_FOLDER && cmake --build $BUILD_FOLDER
-CMD [ "/run.sh"]
+# Add default user and script to auto configure and build
+RUN useradd -ms /bin/bash default
+USER default
+WORKDIR /home/default
+ADD docker/${RASPI_ARCH}/run.sh run.sh
+#cmake -DCMAKE_TOOLCHAIN_FILE=/cmake/aarch32-rpi4-linux-gnu.cmake -S .$WORKDIR_FOLDER -B .$BUILD_FOLDER && cmake --build .$BUILD_FOLDER
+CMD ["/bin/sh", "run.sh"]
