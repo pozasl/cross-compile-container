@@ -33,10 +33,10 @@ sh build-arm32.sh
 
 In your ARM project's root directory :
 ```bash
-docker run -it --rm  --volume `pwd`:/workdir -u $(id -u) ubuntu-arm64toolchain:latest 
+docker run -it --rm  --volume `pwd`:/home/default/workdir ubuntu-arm64toolchain:latest 
 ```
 
- The container will create a build folder in your project with the resulted binary.
+The container will create a build folder in your project with the resulted binary.
 
  ## Extending the container
 
@@ -47,6 +47,7 @@ Here's a sample Dockerfile to install wiringpi with boost, libwebsocket, libjson
 ```docker
 FROM ubuntu-arm64-toolchain
 # There's needed file structure when installing dependecies with apt for boost like passwd
+USER root
 RUN cp /etc/passwd ${CHROOT_PATH}/etc/passwd
 RUN cp /etc/group ${CHROOT_PATH}/etc/group
 #
@@ -55,6 +56,9 @@ RUN cp /etc/group ${CHROOT_PATH}/etc/group
 # chroot sh -c is the only way to execute chrooted cmd, you can't use multiple RUN once chrooted in Docker.
 RUN chroot ${CHROOT_PATH} sh -c 'apt-get update && apt-get install libboost-all-dev libjsoncpp-dev libwebsocketpp-dev libssl-dev wget -y \
 && wget https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-${RASPI_ARCH}.deb --no-check-certificate \
-&& dpkg -i wiringpi-2.61-1-${RASPI_ARCH}.deb'
+&& dpkg -i wiringpi-2.61-1-${RASPI_ARCH}.deb \
+&& rm wiringpi-2.61-1-${RASPI_ARCH}.deb \
+&& apt clean'
 #-------------------------
+USER default
 ```
