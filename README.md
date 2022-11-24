@@ -9,6 +9,11 @@ It cames with 2 flavors:
 It uses Debootstrap to create an ARM toolchain in a chrooted environment, and Qemu to install dependencies in this chroot.
 Cmake and Ninja are available with a preconfigured .cmake file for the chrooted toolchain.
 
+## system prerequisites
+- docker
+- binfmt-support
+- qemu-user-static
+
 ## Building the containers
 
 To build an ARM 64 toolchain from this project root directory
@@ -33,7 +38,7 @@ sh build-arm32.sh
 
 In your ARM project's root directory :
 ```bash
-docker run -it --rm  --volume `pwd`:/home/default/workdir ubuntu-arm64toolchain:latest 
+docker run -it --rm --user $(id -u):$(id -g) --volume `pwd`:/home/default/workdir ubuntu-arm64toolchain:latest
 ```
 
 The container will create a build folder in your project with the resulted binary.
