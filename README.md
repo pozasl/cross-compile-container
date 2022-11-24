@@ -38,7 +38,7 @@ sh build-arm32.sh
 
 In your ARM project's root directory :
 ```bash
-docker run -it --rm --user $(id-u):$(id-g) --volume `pwd`:/home/default/workdir ubuntu-arm64toolchain:latest
+docker run -it --rm --user $(id -u):$(id -g) --volume `pwd`:/home/default/workdir ubuntu-arm64toolchain:latest
 ```
 
 The container will create a build folder in your project with the resulted binary.
