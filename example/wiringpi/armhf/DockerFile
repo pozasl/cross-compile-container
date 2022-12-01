@@ -3,6 +3,8 @@ FROM ubuntu-armhf-toolchain
 USER root
 RUN cp /etc/passwd ${CHROOT_PATH}/etc/passwd
 RUN cp /etc/group ${CHROOT_PATH}/etc/group
+# Sometimes the chroot environment can't resolve debian's repository hostname
+RUN cp /etc/resolv.conf ${CHROOT_PATH}/etc/resolv.conf
 #
 # WiringPi chroot install
 #-------------------------

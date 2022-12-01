@@ -9,7 +9,7 @@ It cames with 2 flavors:
 It uses Debootstrap to create an ARM toolchain in a chrooted environment, and Qemu to install dependencies in this chroot.
 Cmake and Ninja are available with a preconfigured .cmake file for the chrooted toolchain.
 
-## system prerequisites
+## System prerequisites
 - docker
 - binfmt-support
 - qemu-user-static
@@ -37,8 +37,15 @@ sh build-arm32.sh
 ## Using the container
 
 In your ARM project's root directory :
+
+For ARM64 project:
 ```bash
 docker run -it --rm --user $(id -u):$(id -g) --volume `pwd`:/home/default/workdir ubuntu-arm64toolchain:latest
+```
+
+For ARM32 project:
+```bash
+docker run -it --rm --user $(id -u):$(id -g) --volume `pwd`:/home/default/workdir ubuntu-armhftoolchain:latest
 ```
 
 The container will create a build folder in your project with the resulted binary.
@@ -48,13 +55,15 @@ The container will create a build folder in your project with the resulted binar
 As a base container, you should extend it by creating your own container with your project's dependencies installed.
 Those dependencies should be installed in the chrooted ARM environment.
 
-Here's a sample Dockerfile to install wiringpi with boost, libwebsocket, libjsoncpp and libssl:
+Here's a sample Dockerfile to install wiringpi with boost, libwebsocket, libjsoncpp and libssl on an ARM64 toolchain:
 ```docker
 FROM ubuntu-arm64-toolchain
 # There's needed file structure when installing dependecies with apt for boost like passwd
 USER root
 RUN cp /etc/passwd ${CHROOT_PATH}/etc/passwd
 RUN cp /etc/group ${CHROOT_PATH}/etc/group
+# Sometimes the chroot environment can't resolve debian's repository hostname
+RUN cp /etc/resolv.conf ${CHROOT_PATH}/etc/resolv.conf
 #
 # WiringPi chroot install
 #-------------------------
