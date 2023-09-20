@@ -1,0 +1,33 @@
+FROM ubuntu:22.04
+
+ENV RASPI_ARCH=arm64
+ENV RASPI_HW_VERSION=rpi4
+ENV RASPI_SW_VERSION=jammy
+ENV CHROOT_PATH=/${RASPI_HW_VERSION}-${RASPI_SW_VERSION}-${RASPI_ARCH}
+ENV CROSS_ARCH=aarch64-linux-gnu
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+ENV WORKDIR_FOLDER /workdir
+ENV BUILD_FOLDER ${WORKDIR_FOLDER}/build
+# Add needed dev tools to compile
+RUN apt-get update && apt-get install -y ubuntu-dev-tools gcc-${CROSS_ARCH} g++-${CROSS_ARCH} cmake ninja-build
+# Install and use debootstrap to create chroot, mk-sbuild won't work
+RUN apt-get install -y debootstrap binfmt-support
+RUN debootstrap --verbose --arch=${RASPI_ARCH} --foreign ${RASPI_SW_VERSION} ${CHROOT_PATH}
+# Needed to finalize jammy's packages installation
+RUN chroot ${CHROOT_PATH} /bin/bash -c "/debootstrap/debootstrap --second-stage"
+# Add universe repo
+RUN echo "deb http://ports.ubuntu.com/ubuntu-ports jammy main universe" > ${CHROOT_PATH}/etc/apt/sources.list
+# Override resolv.conf dns
+RUN echo "nameserver 8.8.4.4" > ${CHROOT_PATH}/etc/resolv.conf
+# Copy QEMU Static from another container to execute ARM cmd in chrooted environment
+COPY --from=multiarch/qemu-user-static /usr/bin/qemu-aarch64-static ${CHROOT_PATH}/usr/bin
+# Add specifique cmake files to configure the toolchain
+ADD docker/${RASPI_ARCH}/cmake /cmake
+# Add default user and script to auto configure and build
+RUN useradd -ms /bin/bash default
+USER default
+WORKDIR /home/default
+ADD docker/${RASPI_ARCH}/run.sh run.sh
+#cmake -DCMAKE_TOOLCHAIN_FILE=/cmake/aarch64-rpi4-linux-gnu.cmake -S .$WORKDIR_FOLDER -B .$BUILD_FOLDER && cmake --build .$BUILD_FOLDER
+CMD ["/bin/sh", "run.sh"]
