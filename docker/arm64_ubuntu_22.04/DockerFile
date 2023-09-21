@@ -23,11 +23,11 @@ RUN echo "nameserver 8.8.4.4" > ${CHROOT_PATH}/etc/resolv.conf
 # Copy QEMU Static from another container to execute ARM cmd in chrooted environment
 COPY --from=multiarch/qemu-user-static /usr/bin/qemu-aarch64-static ${CHROOT_PATH}/usr/bin
 # Add specifique cmake files to configure the toolchain
-ADD docker/${RASPI_ARCH}/cmake /cmake
+ADD docker/arm64_ubuntu_22.04/cmake /cmake
 # Add default user and script to auto configure and build
 RUN useradd -ms /bin/bash default
 USER default
 WORKDIR /home/default
-ADD docker/${RASPI_ARCH}/run.sh run.sh
+ADD docker/arm64_ubuntu_22.04/run.sh run.sh
 #cmake -DCMAKE_TOOLCHAIN_FILE=/cmake/aarch64-rpi4-linux-gnu.cmake -S .$WORKDIR_FOLDER -B .$BUILD_FOLDER && cmake --build .$BUILD_FOLDER
 CMD ["/bin/sh", "run.sh"]
